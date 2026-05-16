@@ -1,0 +1,37 @@
+body {
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.main-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1 {
+    font-weight: bold;
+}
+
+.summary-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.chart-box {
+    width: 400px;
+    margin: auto;
+}
+
+button {
+    border-radius: 10px !important;
+}
+
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
