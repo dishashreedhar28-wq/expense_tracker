@@ -1,23 +1,19 @@
-
-   
-
-
-
-
 from flask import Flask, render_template, request, redirect
 import csv
 from datetime import datetime
 from collections import defaultdict
+from sklearn.linear_model import LinearRegression
+import numpy as np
 
 app = Flask(__name__)
 
 CSV_FILE = 'expenses.csv'
 
-# Create CSV if not exists
 try:
     open(CSV_FILE, 'x').write('Date,Title,Category,Amount\n')
 except:
     pass
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -37,6 +33,7 @@ def index():
 
     expenses = []
     total = 0
+    prediction = None
     category_totals = defaultdict(float)
 
     selected_month = request.args.get('month', '')
@@ -45,7 +42,6 @@ def index():
         reader = csv.DictReader(file)
 
         for row in reader:
-
             month = row['Date'][:7]
 
             if selected_month == '' or month == selected_month:
@@ -53,14 +49,32 @@ def index():
                 total += float(row['Amount'])
                 category_totals[row['Category']] += float(row['Amount'])
 
+    if len(expenses) >= 2:
+        X = np.array(range(len(expenses))).reshape(-1, 1)
+        y = np.array([float(exp['Amount']) for exp in expenses])
+
+        model = LinearRegression()
+        model.fit(X, y)
+
+        next_expense = np.array([[len(expenses)]])
+        prediction = round(model.predict(next_expense)[0], 2)
+
     return render_template(
         'index.html',
         expenses=expenses,
         total=total,
         category_totals=dict(category_totals),
-        selected_month=selected_month
+        selected_month=selected_month,
+        prediction=prediction
     )
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=5000,debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
+   
+
+
+
+
+
